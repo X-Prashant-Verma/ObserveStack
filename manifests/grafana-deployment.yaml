@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-admin-credentials
+                  key: admin-user
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-admin-credentials
+                  key: admin-password
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+      nodePort: 32000
+  selector:
+    app: grafana

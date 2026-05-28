@@ -7,14 +7,23 @@ data:
   prometheus.yml: |-
     global:
       scrape_interval: 15s
+
+    rule_files:
+      - /etc/prometheus/alert-rules.yml
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets: ['alertmanager-service:9093']
+
     scrape_configs:
       - job_name: 'prometheus'
         static_configs:
           - targets: ['localhost:9090']
-      
+
       - job_name: 'kubernetes-nodes'
         kubernetes_sd_configs:
-          - role: 'node'
+          - role: node
 
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
@@ -27,3 +36,16 @@ data:
             action: replace
             target_label: __metrics_path__
             regex: (.+)
+
+  alert-rules.yml: |-
+    groups:
+      - name: pod-alerts
+        rules:
+          - alert: PodDown
+            expr: kube_pod_status_phase{phase="Running"} == 0
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Pod {{ $labels.pod }} is down"
+              description: "Pod has been non-Running for 2+ minutes"

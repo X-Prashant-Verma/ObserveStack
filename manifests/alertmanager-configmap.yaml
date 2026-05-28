@@ -17,3 +17,6 @@ data:
 
     receivers:
       - name: 'local-test-webhook'
+        webhook_configs:
+          - url: 'http://webhook-service.monitoring.svc.cluster.local:9000/alerts'
+            send_resolved: true

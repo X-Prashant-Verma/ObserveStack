@@ -13,7 +13,7 @@
 │  ┌─────────────────────────────────────────────────────┐    │
 │  │              monitoring namespace                   │    │
 │  │                                                     │    │
-│  │  ┌─────────────┐     scrapes     ┌───────────────┐  │    │
+│  │  ┌──────────────┐     scrapes    ┌───────────────┐  │    │
 │  │  │  Prometheus  │◄───────────────│ node-exporter │  │    │
 │  │  │  :9090       │  (DaemonSet)   │ :9100         │  │    │
 │  │  │              │                └───────────────┘  │    │
@@ -139,7 +139,7 @@ Grafana:     http://<node-ip>:32000
 ![Grafana Dashboard](screenshots/05-grafana-dashboard.png)
 
 ### Alertmanager Running
-![Alertmanager](screenshots/06-alertmanager-running.png)
+![Alertmanager](screenshots/06-alertmanager-config.png)
 
 ---
 
